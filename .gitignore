@@ -1,0 +1,5 @@
+dist/
+node_modules/
+# Claves privadas: jamas en este repo
+*.key
+db-signing*

@@ -1,0 +1,10 @@
+{
+  "id": "redroid-15-2025-06-27",
+  "androidVersion": 15,
+  "imagen": "redroid/redroid",
+  "tag": "15.0.0-latest",
+  "digest": "sha256:81889852444606824d33eb0232fa5813bce3f0993afe871785120af0d7c991ad",
+  "arch": "amd64",
+  "construidaEn": "2025-06-27T15:38:04Z",
+  "estado": "vigente"
+}

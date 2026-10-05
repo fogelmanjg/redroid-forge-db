@@ -1,0 +1,23 @@
+name: validate
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'   # semanal: detecta enlaces de paquetes muertos o alterados
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: fogelmanjg/redroid-forge
+          path: forge
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Compilar y validar (mismo validador que redroid-forge)
+        run: node tools/build.js --forge forge
+      - name: Los paquetes siguen descargando al sha256 declarado
+        run: node tools/check-urls.js
