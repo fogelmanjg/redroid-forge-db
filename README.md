@@ -1,47 +1,51 @@
 # redroid-forge-db
 
-Base de datos de **combinaciones conocidas** de [redroid-forge](https://github.com/fogelmanjg/redroid-forge):
-qué imagen oficial de Redroid (fijada por *digest*), qué paquete GApps, qué versión de Magisk y qué módulos
-se validaron juntos, **en qué hardware** y con qué evidencia.
+**English** · [Español](README.es.md)
 
-redroid-forge usa esta base para decirle al usuario si su instancia está en terreno conocido
-(`oficial`, `comunidad` o `sin-soporte`). Diseño completo:
-[`docs/BASE-COMBINACIONES.md`](https://github.com/fogelmanjg/redroid-forge/blob/main/docs/BASE-COMBINACIONES.md).
+Database of the **known combinations** of [redroid-forge](https://github.com/fogelmanjg/redroid-forge):
+which official Redroid image (pinned by *digest*), which GApps package, which Magisk version and which
+modules were validated together, **on what hardware** and with what evidence.
 
-## Qué NO es
+redroid-forge uses this database to tell the user whether their instance is on known ground
+(`oficial`, `comunidad` or `sin-soporte`). Full design:
+[`docs/KNOWN-COMBINATIONS.md`](https://github.com/fogelmanjg/redroid-forge/blob/main/docs/KNOWN-COMBINATIONS.md).
 
-- **No es una garantía.** Es software libre sin garantías (Apache-2.0). "Oficial" significa
-  *validada con evidencia que cualquiera puede repetir*, no "funciona seguro".
-- **La firma prueba autenticidad, no corrección.** Garantiza quién publicó la base y que no fue
-  alterada; no dice que las combinaciones funcionen.
-- **No redistribuye binarios.** Los paquetes (GApps, Magisk) son *punteros*: URL de origen + `sha256`.
-  Nunca se aloja el contenido.
+## What it is NOT
 
-## Estructura
+- **It is not a guarantee.** It is free software without warranty (Apache-2.0). "Official" means
+  *validated with evidence that anyone can repeat*, not "works for sure".
+- **The signature proves authenticity, not correctness.** It guarantees who published the database and
+  that it was not altered; it does not say the combinations work.
+- **It does not redistribute binaries.** The packages (GApps, Magisk) are *pointers*: source URL +
+  `sha256`. The content is never hosted.
+
+## Layout
 
 ```
-bases/*.json          una por imagen base oficial (identificada por digest sha256, no por tag)
-paquetes/*.json       una por paquete GApps/Magisk (origen + sha256 obligatorio)
-combinaciones/*.json  una por combinación + sus validaciones por hardware, con chequeos
-meta.json             schemaVersion, serial (monotónico) y minForgeVersion
-tools/build.js        compila todo a dist/database.json y lo valida
-tools/check-urls.js   comprueba que cada paquete siga descargando al sha256 declarado
-tools/db-sign.js      genera la clave de firma y firma/verifica (sin dependencias)
+bases/*.json          one per official base image (identified by sha256 digest, not by tag)
+paquetes/*.json       one per GApps/Magisk package (source + mandatory sha256)
+combinaciones/*.json  one per combination + its per-hardware validations, with checks
+meta.json             schemaVersion, serial (monotonic) and minForgeVersion
+tools/build.js        compiles everything into dist/database.json and validates it
+tools/check-urls.js   checks that every package still downloads to the declared sha256
+tools/db-sign.js      generates the signing key and signs/verifies (dependency-free)
 ```
 
-## Cómo lo consume redroid-forge
+The data format keeps its Spanish field names (`bases`, `paquetes`, `combinaciones`, `soporte`, ...) on
+purpose: they are part of the signed format that redroid-forge reads. Free-text fields are in English.
 
-Cada release de redroid-forge trae un *snapshot* de esta base (funciona offline). Opcionalmente, el
-usuario puede **actualizar** desde la última release de este repo: la app descarga
-`database.json` + `database.json.sig`, **verifica la firma ed25519** contra las claves públicas que
-trae embebidas, comprueba que el `serial` sea mayor (anti-rollback) y recién entonces la aplica.
-Aplicar es siempre una acción explícita.
+## How redroid-forge consumes it
 
-## Contribuir
+Every redroid-forge release ships a *snapshot* of this database (it works offline). Optionally, the user
+can **update** from the latest release of this repo: the app downloads `database.json` +
+`database.json.sig`, **verifies the ed25519 signature** against the public keys it embeds, checks that
+the `serial` is higher (anti-rollback) and only then applies it. Applying is always an explicit action.
 
-Ver [`CONTRIBUTING.md`](CONTRIBUTING.md). Resumen: un PR con **evidencia** de tu validación.
-Las combinaciones `comunidad` entran con checks automáticos; `oficial` requiere revisión.
+## Contributing
 
-## Licencia
+See [`CONTRIBUTING.md`](CONTRIBUTING.md). In short: a PR with **evidence** of your validation.
+`comunidad` combinations get in with automatic checks; `oficial` requires review.
 
-Apache-2.0 (ver `LICENSE`).
+## License
+
+Apache-2.0 (see `LICENSE`).

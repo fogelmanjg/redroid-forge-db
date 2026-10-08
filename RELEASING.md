@@ -1,38 +1,37 @@
-# Liberar una versión de la base (solo mantenedores)
+# Releasing a version of the database (maintainers only)
 
-La firma se hace **a mano, en la máquina de quien libera**, con la clave privada protegida por
-passphrase. **Nunca** en CI ni en un servidor compartido. El archivo de la clave privada no está ni
-estará en este repo.
+Signing is done **by hand, on the releaser's machine**, with the private key protected by a passphrase.
+**Never** in CI or on a shared server. The private key file is not, and will never be, in this repo.
 
 ```bash
-# 1. Subir el serial (siempre mayor al anterior: es la protección anti-rollback)
-#    editar meta.json -> "serial": N+1   (y minForgeVersion si hace falta)
+# 1. Bump the serial (always higher than the previous one: it is the anti-rollback protection)
+#    edit meta.json -> "serial": N+1   (and minForgeVersion if needed)
 
-# 2. Compilar y validar (usa el validador de redroid-forge)
-node tools/build.js --forge <checkout de redroid-forge>
+# 2. Build and validate (uses redroid-forge's validator)
+node tools/build.js --forge <redroid-forge checkout>
 
-# 3. Firmar (te pide la passphrase por terminal)
+# 3. Sign (it asks for the passphrase on the terminal)
 node tools/db-sign.js sign dist/database.json ~/.redroid-forge-keys/db-signing.key
 node tools/db-sign.js verify dist/database.json ~/.redroid-forge-keys/db-signing.pub
 
-# 4. Publicar la release con los TRES archivos (los nombres son fijos)
+# 4. Publish the release with the THREE files (the names are fixed)
 gh release create "serial-N+1" dist/database.json dist/database.json.sig dist/latest.json \
-  --title "Base serial N+1" --notes "..."
+  --title "Database serial N+1" --notes "..."
 ```
 
-redroid-forge descarga `releases/latest/download/{database.json, database.json.sig, latest.json}`.
+redroid-forge downloads `releases/latest/download/{database.json, database.json.sig, latest.json}`.
 
-## Generar la clave (una sola vez)
+## Generating the key (once)
 
-Con Node (esta herramienta) o con OpenSSL — ambas producen firmas que redroid-forge acepta:
+With Node (this tool) or with OpenSSL — both produce signatures that redroid-forge accepts:
 
 ```bash
-node tools/db-sign.js keygen ~/.redroid-forge-keys        # pide passphrase (mín. 12 caracteres)
-# o:
+node tools/db-sign.js keygen ~/.redroid-forge-keys        # asks for a passphrase (min. 12 characters)
+# or:
 openssl genpkey -algorithm ed25519 -aes-256-cbc -out db-signing.key
 openssl pkey -in db-signing.key -pubout -out db-signing.pub
 ```
 
-La clave **pública** va a `backend/db/trusted-keys.json` en redroid-forge. **Guardá un respaldo de
-la privada**: si se pierde hay que rotar a una clave nueva (la lista de claves de confianza admite
-varias justamente para eso).
+The **public** key goes into `backend/db/trusted-keys.json` in redroid-forge. **Keep a backup of the
+private one**: if it is lost you have to rotate to a new key (the trusted-keys list accepts several
+precisely for that).
