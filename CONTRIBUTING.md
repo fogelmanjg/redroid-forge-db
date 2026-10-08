@@ -1,28 +1,29 @@
-# Contribuir
+# Contributing
 
-La base solo vale lo que valen sus validaciones: cada afirmación tiene que poder **repetirse**.
+The database is only worth as much as its validations: every claim has to be **repeatable**.
 
-## Reportar una combinación que probaste
+## Reporting a combination you tested
 
-1. Probala con redroid-forge sobre **la imagen oficial sin modificar** (no se aceptan imágenes armadas a mano).
-2. Armá (o editá) el archivo en `combinaciones/<id>.json` con una entrada en `validaciones`:
-   - `hardware`: `vendor` (`amd`/`intel`/`nvidia`), `gpu` y `driver`.
-   - `fecha`, `forgeVersion` y `resultado` (`ok` / `parcial` / `falla`).
-   - `chequeos`: lista de `{ id, resultado, detalle }` — lo que corriste y qué dio. Deben poder repetirse.
-   - `notas` y `evidencia` (enlace a un PR, issue, logs).
-3. Si usás piezas nuevas, agregalas en `bases/` (digest `sha256:…` real, no el tag) o `paquetes/`
-   (`origen` + `sha256` que coincida con lo que se descarga: `node tools/check-urls.js`).
-4. Compilá y validá localmente: `node tools/build.js --forge <checkout de redroid-forge>`.
-5. Abrí el PR. La CI repite la validación.
+1. Test it with redroid-forge on **the unmodified official image** (hand-built images are not accepted).
+2. Create (or edit) the file `combinaciones/<id>.json` with an entry in `validaciones`:
+   - `hardware`: `vendor` (`amd`/`intel`/`nvidia`), `gpu` and `driver`.
+   - `fecha`, `forgeVersion` and `resultado` (`ok` / `parcial` / `falla`).
+   - `chequeos`: a list of `{ id, resultado, detalle }` — what you ran and what it gave. They must be repeatable.
+   - `notas` and `evidencia` (link to a PR, issue, logs).
+3. If you use new pieces, add them in `bases/` (real `sha256:…` digest, not the tag) or `paquetes/`
+   (`origen` + a `sha256` that matches what gets downloaded: `node tools/check-urls.js`).
+4. Build and validate locally: `node tools/build.js --forge <redroid-forge checkout>`.
+5. Open the PR. CI repeats the validation.
 
-## Niveles
+## Levels
 
-- **`comunidad`**: entra con checks automáticos (formato, referencias, hashes). Revisión mínima.
-- **`oficial`**: exige al menos una validación `ok` y la revisión de un mantenedor, porque lleva una
-  promesa de soporte detrás.
+- **`comunidad`**: gets in with automatic checks (format, references, hashes). Minimal review.
+- **`oficial`**: requires at least one `ok` validation and a maintainer's review, because a support
+  promise stands behind it.
 
-## Reglas
+## Rules
 
-- Nunca subas binarios de terceros: solo punteros (URL + `sha256`).
-- No toques `meta.json` (`serial`) en un PR de contribución: lo sube el mantenedor al liberar.
-- Los reportes honestos de `falla`/`parcial` son tan valiosos como los `ok`.
+- Never upload third-party binaries: only pointers (URL + `sha256`).
+- Do not touch `meta.json` (`serial`) in a contribution PR: the maintainer bumps it when releasing.
+- Honest `falla`/`parcial` reports are as valuable as the `ok` ones.
+- Write free-text fields (`detalle`, `notas`, `descripcion`) in English.

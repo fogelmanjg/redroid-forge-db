@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Para cada paquete (GApps/Magisk), descarga su "origen" y comprueba que el
-// sha256 coincide con el declarado. Detecta enlaces muertos o que cambiaron de
-// contenido (ver docs/BASE-COMBINACIONES.md 6 y 6.1 en redroid-forge).
-// Sale con codigo 1 si alguno no coincide.
+// For every package (GApps/Magisk), downloads its "origen" and checks that the
+// sha256 matches the declared one. Detects dead links or links whose content
+// changed (see docs/KNOWN-COMBINATIONS.md 6 and 6.1 in redroid-forge).
+// Exits with code 1 if any of them does not match.
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -17,13 +17,13 @@ const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json'));
       const res = await fetch(p.origen, { redirect: 'follow', signal: AbortSignal.timeout(120000) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const h = crypto.createHash('sha256').update(Buffer.from(await res.arrayBuffer())).digest('hex');
-      if (h !== p.sha256) throw new Error(`sha256 distinto (declarado ${p.sha256}, descargado ${h})`);
+      if (h !== p.sha256) throw new Error(`sha256 differs (declared ${p.sha256}, downloaded ${h})`);
       console.log(`ok   ${p.id}`);
     } catch (e) {
       bad++;
-      console.log(`FALLA ${p.id}: ${e.message}`);
+      console.log(`FAIL ${p.id}: ${e.message}`);
     }
   }
-  console.log(files.length ? `${files.length - bad}/${files.length} paquetes verificados` : 'sin paquetes que verificar');
+  console.log(files.length ? `${files.length - bad}/${files.length} packages verified` : 'no packages to verify');
   process.exit(bad ? 1 : 0);
 })();
