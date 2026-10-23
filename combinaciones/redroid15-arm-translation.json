@@ -34,8 +34,27 @@
           "detalle": "Loop Sort (com.Garawell.LoopSort, arm64-only, Unity IL2CPP) installs, boots and is playable past level 4 with the full official 82-file set, hardware encoder active at 20 Mbps -- no crash in libndk_translation.so, unlike the r09/ext14 build"
         }
       ],
-      "notas": "pvz2 (com.ea.game.pvz2_row, arm64) installs and runs with the older r09/ext14 build (does not crash the way Loop Sort does), but was not yet tried specifically with this ext15 package -- pending.",
+      "notas": "pvz2 against this exact ext15 package tested later, through redroid-forge's actual creation API -- see the next validation entry.",
       "evidencia": "https://github.com/fogelmanjg/redroid-ndk-translation/blob/main/docs/COMPATIBILITY.md"
+    },
+    {
+      "hardware": {
+        "vendor": "amd",
+        "gpu": "Ryzen 5700G (Renoir, iGPU)",
+        "driver": "radeonsi"
+      },
+      "fecha": "2026-10-23",
+      "forgeVersion": "0.1.0",
+      "resultado": "ok",
+      "chequeos": [
+        {
+          "id": "arm-translation.pvz2",
+          "resultado": "ok",
+          "detalle": "Plants vs Zombies 2 (com.ea.game.pvz2_row, arm64, versionName 13.5.1) installs and boots through this exact ext15 package, renders real UI (notification permission dialog, OBB download attempt), no crash inside libndk_translation.so -- the only screen it could not get past is the expected \"requires Google Play services\" dialog, because that test instance has no gapps module, not an arm-translation or WiFi issue"
+        }
+      ],
+      "notas": "Created and tested through redroid-forge's actual API (POST /api/instances with modules [\"arm-translation\", \"wifi-interno-virtwifi\"]), gpuMode=guest (software rendering) -- not a manual/ad-hoc test. Same session also validated wifi-interno-virtwifi end to end for the first time through the real module system (see project_redroid_wifi_interno in the project's memory for that module's own history).",
+      "evidencia": "https://github.com/fogelmanjg/redroid-forge (commit b1424f0)"
     }
   ],
   "problemasConocidos": [
