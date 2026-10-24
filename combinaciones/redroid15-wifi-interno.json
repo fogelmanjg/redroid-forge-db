@@ -1,0 +1,56 @@
+{
+  "id": "redroid15-wifi-interno",
+  "base": "redroid-15-2025-06-27",
+  "gapps": null,
+  "magisk": null,
+  "modulos": {
+    "wifi-interno": 2
+  },
+  "soporte": "oficial",
+  "validaciones": [
+    {
+      "hardware": {
+        "vendor": "amd",
+        "gpu": "Ryzen 5700G (Renoir, iGPU)",
+        "driver": "radeonsi"
+      },
+      "fecha": "2026-10-24",
+      "forgeVersion": "0.1.0",
+      "resultado": "ok",
+      "chequeos": [
+        {
+          "id": "wifi-interno.hal-overlay-inyectado",
+          "resultado": "ok",
+          "detalle": "the fake-WiFi-HAL overlay (com.android.wifi.apex + com.android.tethering.apex + framework-res.apk, built from the project's own AOSP tree against the production Wifi.patch, mac80211_hwsim-backed) and the native jg_netfix.sh daemon are injected/launched on an UNMODIFIED official redroid/redroid:15.0.0-latest image through the module's own stage 4 (integrate) / stage 6 (ensureRuntimeReady), with no custom image build required by the user"
+        },
+        {
+          "id": "wifi-interno.conectado",
+          "resultado": "ok",
+          "detalle": "through the real module system (POST /api/modules/wifi-interno/accept + recreate), cmd wifi status reports \"Wifi is connected to 'jg-wifi'\" with a real IP (/172.17.0.6) on wlan0 (eth0 renamed by jg_netfix.sh)"
+        },
+        {
+          "id": "wifi-interno.dns-real",
+          "resultado": "ok",
+          "detalle": "dumpsys connectivity shows DnsAddresses: [/8.8.8.8,/8.8.4.4], a full default route, and `ping www.google.com` resolves and replies for real (not just a raw-IP ping)"
+        },
+        {
+          "id": "wifi-interno.app-real-ads",
+          "resultado": "ok",
+          "detalle": "Plants vs Zombies 2 (EA/PopCap, installed via Aurora Store, see project's own notes on that path) shows real ads over this connection, after the ad SDK's normal first-fill delay -- confirms the fake connectivity is good enough for a real third-party network dependency, not just Android's own superficial internet-check"
+        }
+      ],
+      "notas": "This validates the hwsim-backed wifi-interno module as an addable module on the stock official image (no custom AOSP build needed by the user). It is NOT the virt_wifi-backed alternative (wifi-interno-virtwifi module): that one remains experimental, is not part of redroid-forge's first functional release, and has a known unresolved kernel hang on real scan/connect -- intentionally left out of this database until it is validated end to end.",
+      "evidencia": "https://github.com/fogelmanjg/redroid-forge/commit/88fe304"
+    }
+  ],
+  "problemasConocidos": [
+    {
+      "id": "dns-race-ipclient",
+      "descripcion": "IpClient tracks its interface by kernel ifindex, not by name. A manual `svc wifi disable`/`enable` toggle mid-session can race jg_netfix.sh's eth0->wlan0 rename against IpClient's own provisioning start for that connect attempt, leaving DNS/default-route unpopulated (observed once even stuck on \"Wifi is disabled\"). A clean container restart does not hit this. Pre-existing bug shared with the project's own jg-dashboard/pvz2-tv production use of the same HAL; not introduced or newly fixed by this module."
+    },
+    {
+      "id": "pool-hwsim-compartido-sin-coordinar-entre-proyectos",
+      "descripcion": "hwsim radios are claimed from a host-wide shared pool. Concurrent instances are coordinated within redroid-forge, but not against other, separate projects on the same host also using hwsim (e.g. jg-dashboard) -- that cross-project race is a known, deferred issue."
+    }
+  ]
+}
