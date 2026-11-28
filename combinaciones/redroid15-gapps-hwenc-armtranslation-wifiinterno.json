@@ -4,7 +4,7 @@
   "gapps": "gapps-sdk35-r09-x86_64",
   "magisk": null,
   "modulos": {
-    "redroid-gralloc-fix": 3,
+    "redroid-gralloc-fix": 4,
     "gapps": 3,
     "arm-translation": 3,
     "wifi-interno": 2,
@@ -49,6 +49,34 @@
         }
       ],
       "notas": "Validated by migrating a real instance rather than with a dedicated test campaign. The user then keeps it in a 48 h trial for the Google side (identity/certification of the migrated device), which is about the migration, not about this module combination."
+    },
+    {
+      "hardware": {
+        "vendor": "amd",
+        "gpu": "AMD Radeon Graphics (Cezanne, integrated -- Ryzen 7 5700G)",
+        "driver": "radeonsi"
+      },
+      "fecha": "2026-11-27",
+      "forgeVersion": "1.0.0-rc.6",
+      "resultado": "ok",
+      "chequeos": [
+        {
+          "id": "gralloc-fix.yv12-video-real",
+          "resultado": "ok",
+          "detalle": "retrato-foto on redroid-forge-prod has run with redroid-gralloc-fix 4 since 26/11 10:43, more than 35 h with no Android restart (system_server and surfaceflinger unchanged). In that time Horde Rush decoded video ads (2 concurrent software video decoders, up to 1920x1080) without the surfaceflinger abort that version 3 had on YV12."
+        },
+        {
+          "id": "gralloc-fix.10-bit",
+          "resultado": "ok",
+          "detalle": "the 10-bit part is unchanged from version 3; Doctor reports it applied on every instance"
+        },
+        {
+          "id": "produccion.reinicio-con-modulo",
+          "resultado": "ok",
+          "detalle": "pvz2-juan and pvz2-romina restarted on 27/11 to take version 4: both booted with the fix applied, the internal WiFi connected (about a minute after boot) and internet works"
+        }
+      ],
+      "notas": "Version 4 of redroid-gralloc-fix adds the YV12 video layout fix on top of version 3. The earlier validation in this file was made with version 3, and the rest of the combination is unchanged."
     }
   ],
   "problemasConocidos": [

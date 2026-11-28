@@ -4,7 +4,7 @@
   "gapps": "gapps-sdk35-r09-x86_64",
   "magisk": null,
   "modulos": {
-    "redroid-gralloc-fix": 3,
+    "redroid-gralloc-fix": 4,
     "hwenc": 10,
     "gapps": 3,
     "arm-translation": 3,
@@ -67,6 +67,29 @@
         }
       ],
       "notas": "Second validation of the same combination: what changed underneath (hwenc daemon v0.3.0 and its Android component with stream_id) on the same production host and the same two real instances. Module manifest versions are unchanged."
+    },
+    {
+      "hardware": {
+        "vendor": "amd",
+        "gpu": "AMD Radeon Graphics (Cezanne, integrated -- Ryzen 7 5700G)",
+        "driver": "radeonsi"
+      },
+      "fecha": "2026-11-27",
+      "forgeVersion": "1.0.0-rc.6",
+      "resultado": "ok",
+      "chequeos": [
+        {
+          "id": "gralloc-fix.aplicado",
+          "resultado": "ok",
+          "detalle": "cifi, cifi-nuevo and herotale on redroid-forge-prod restarted on 27/11 to take redroid-gralloc-fix 4: Doctor reports both the 10-bit and the YV12 parts applied, Android booted, internet works, and the cifi watchdog keeps the game open"
+        },
+        {
+          "id": "gralloc-fix.yv12-video-real",
+          "resultado": "ok",
+          "detalle": "the YV12 part was validated with real video ads on the same host, GPU and image in the wifi-interno combination (retrato-foto, more than 35 h with no Android restart). This combination differs only in aurora-store, which has nothing to do with graphics buffers"
+        }
+      ],
+      "notas": "Version 4 of redroid-gralloc-fix adds the YV12 video layout fix on top of version 3. The earlier validations in this file were made with version 3, and the rest of the combination is unchanged."
     }
   ],
   "problemasConocidos": []
